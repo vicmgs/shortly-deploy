@@ -38,3 +38,27 @@ db.knex.schema.hasTable('users').then(function(exists) {
 });
 
 module.exports = db;
+
+
+var mongoose = require('mongoose');
+var database = mongoose.connection;
+
+database.on('error', console.error.bind(console, 'connection error:'));
+database.once('open', function() {
+  console.log('yay');
+});
+
+mongoose.connect('mongodb://localhost/penisDB');
+
+db.urlsSchema = new mongoose.Schema({
+  url: String,
+  baseUrl: String,
+  code: String,
+  title: String,
+  visits: Number
+});
+
+db.usersSchema = new mongoose.Schema({
+  username: String,
+  password: String
+});
