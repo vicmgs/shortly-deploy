@@ -58,7 +58,6 @@ db.urlsSchema = new mongoose.Schema({
   visits: Number
 });
 
-
 db.usersSchema = new mongoose.Schema({
   username: String,
   password: String

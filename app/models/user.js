@@ -24,29 +24,17 @@ var mongoose = require('mongoose');
   // }
 // });
 
-db.usersSchema.pre('save', function(next) {
-  var user = this;
-
-  if (!user.isModified('password')) return next();
-
-  bcrypt.hash(user.password, null, function(err, hash) {
-    if (err) return next(err);
-    user.password = hash;
-    next();
-  });
-});
-
-
 var User = mongoose.model('User', db.usersSchema);
 
 User.hashPassword = function(pass) {
   var cipher = Promise.promisify(bcrypt.hash);
-  return cipher(pass, null, null);
+  return cipher(pass, null, null)
+    .then(function(hash) {
+      return hash;
+  });
 };
 
 User.comparePassword = function(password, hash) {
-  console.log('password: ' + password);
-  console.log('hash: ' + hash);
   var compare = Promise.promisify(bcrypt.compare);
   return compare(password, hash);
 };
