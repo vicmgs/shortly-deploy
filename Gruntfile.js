@@ -101,7 +101,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nodemon');
 
   grunt.registerTask('server-dev', function (target) {
-    grunt.task.run([ 'watch', 'nodemon' ]);
+    grunt.task.run([ 'nodemon', 'watch' ]);
   });
 
   ////////////////////////////////////////////////////
