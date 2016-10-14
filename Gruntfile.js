@@ -4,12 +4,12 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       options: {
-        separator: ';',
+        separator: ';'
       },
       dist: {
-        src: ['public/client/*', 'public/lib/*'],
-        dest: 'public/dist/built.js',
-      },
+        src: ['public/client/**/*.js'],
+        dest: 'public/dist/<%= pkg.name %>.js'
+      }
     },
 
     mochaTest: {
@@ -28,8 +28,8 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+
       options: {
-        // the banner is inserted at the top of the output
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
       },
       dist: {
@@ -41,14 +41,23 @@ module.exports = function(grunt) {
 
     eslint: {
       target: [
-        'public/client/*'
-      ]
+        'Gruntfile.js',
+        'app/**/*.js',
+        'public/**/*.js',
+        'lib/**/*.js',
+        './*.js',
+        'spec/**/*.js'
+              ]
     },
 
     cssmin: {
-      css:{
-        src: 'public/style.css',
-        dest: 'public/dist/concat.min.css'
+      options: {
+        keepSpecialComments: 0
+      },
+      dist: {
+        files: {
+          'public/dist/style.min.css': 'public/style.css'
+        }
       }
     },
 
@@ -71,7 +80,13 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        command: 'git push live master'
+
+        command: 'git push live master',
+        options: {
+          stdout: true,
+          stderr: true,
+          failOnError: true
+        }
       }
     },
   });
@@ -89,27 +104,37 @@ module.exports = function(grunt) {
     grunt.task.run([ 'nodemon', 'watch' ]);
   });
 
+  ////////////////////////////////////////////////////
+  // Main grunt tasks
+  ////////////////////////////////////////////////////
+
   grunt.registerTask('test', [
-    'mochaTest'
+
+    'eslint',
+        'mochaTest'
   ]);
 
   grunt.registerTask('build', [
-  ]);
+
+    'concat',
+    'uglify',
+    'cssmin'
+      ]);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
-      // add your production server task here
-    } else {
+
+      grunt.task.run([ 'shell:prodServer' ]);
+          } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
   grunt.registerTask('deploy', [
-    'concat', 'uglify', 'cssmin', 'eslint', 'test', 'nodemon'
-  ]);
 
-  grunt.registerTask('default', [
-    'deploy'
+    'test',
+    'build',
+    'upload'
   ]);
 
 
