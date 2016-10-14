@@ -17,6 +17,6 @@ db.usersSchema.pre('save', function(next) {
     user.password = hash;
     next();
   });
-})
+});
 
 module.exports = User;
