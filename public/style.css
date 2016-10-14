@@ -12,6 +12,7 @@ a {
 
 h1 {
   margin-bottom: 10px;
+  text-decoration: underline;
 }
 
 .navigation {
